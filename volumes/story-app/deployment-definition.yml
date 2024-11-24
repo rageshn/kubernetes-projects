@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: story-app
+spec:
+  selector:
+    matchLabels:
+      app: story-app
+  template:
+    metadata:
+      labels:
+        app: story-app
+    spec:
+      containers:
+      - name: story-app-container
+        image: rageshn/story-app
+        env:
+          - name: STORY_FOLDER
+            value: /app/story/
+        volumeMounts: 
+          - mountPath: /app/story/
+            name: story-volume
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8081
+      volumes:
+        - name: story-volume
+          persistentVolumeClaim: 
+            claimName: mypvc
+          #emptyDir: {} 
+          #hostPath: 
+          #  path: /home/kubeadmin/Documents/workspace/kubernetes-projects/volumes/story-app/data
+          #  type: DirectoryOrCreate
+  replicas: 2
